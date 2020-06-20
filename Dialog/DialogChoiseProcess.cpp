@@ -1,6 +1,5 @@
 #include "DialogChoiseProcess.h"
 #include <QProcess>
-#include <QDebug>
 
 DialogChoiseProcess::DialogChoiseProcess(const QString &title, QWidget *parent) :
     DialogComboBox(title, getListProcess(), parent)
