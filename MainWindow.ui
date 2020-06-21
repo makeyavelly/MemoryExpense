@@ -34,7 +34,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QGraphicsView" name="view"/>
+     <widget class="Plot" name="plot"/>
     </item>
    </layout>
   </widget>
@@ -62,6 +62,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Plot</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">Diagram/Plot.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>

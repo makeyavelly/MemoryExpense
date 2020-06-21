@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,11 +17,17 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QTimer timer;
     QString procName;
     int procPid;
 
+    void loadSettings();
+    void saveSettings();
+
     void setProc(int pid, const QString &name);
+    void startAnalize();
 
 private slots:
     void on_actionChoiseProc_triggered();
+    void slotAnalize();
 };
