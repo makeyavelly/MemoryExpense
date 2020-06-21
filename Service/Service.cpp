@@ -1,6 +1,18 @@
 #include "Service.h"
 #include <QProcess>
 
+int getPidProcess(const QString &name)
+{
+#ifdef __linux
+    QProcess process;
+    process.start(QString("pgrep %1").arg(name));
+    process.waitForFinished();
+    return process.readAll().toInt();
+#else
+    return 0;
+#endif
+}
+
 long getMemoryExpense(int pid)
 {
 #ifdef __linux
