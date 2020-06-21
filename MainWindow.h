@@ -21,11 +21,16 @@ private:
     QString procName;
     int procPid;
 
+    long memoryMin;
+    long memoryMax;
+
     void loadSettings();
     void saveSettings();
 
     void setProc(int pid, const QString &name);
     void startAnalize();
+
+    void analizeMemory();
 
 private slots:
     void on_actionChoiseProc_triggered();

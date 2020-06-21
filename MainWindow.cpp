@@ -3,7 +3,6 @@
 #include <QSettings>
 #include "Dialog/DialogChoiseProcess.h"
 #include "Service/Service.h"
-#include <QDebug> //delete
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -34,12 +33,18 @@ void MainWindow::loadSettings()
             startAnalize();
         }
     }
+    setGeometry(ini.value("WINDOW/x", 0).toInt(), ini.value("WINDOW/y", 0).toInt(),
+                ini.value("WINDOW/w", 500).toInt(), ini.value("WINDOW/h", 300).toInt());
 }
 
 void MainWindow::saveSettings()
 {
     QSettings ini;
     ini.setValue("PROC/name", procName);
+    ini.setValue("WINDOW/x", geometry().x());
+    ini.setValue("WINDOW/y", geometry().y());
+    ini.setValue("WINDOW/w", geometry().width());
+    ini.setValue("WINDOW/h", geometry().height());
 }
 
 void MainWindow::setProc(int pid, const QString &name)
@@ -55,7 +60,22 @@ void MainWindow::startAnalize()
         QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(slotAnalize()));
         timer.start(1000);
     }
+    memoryMin = -1;
+    memoryMax = -1;
     ui->plot->clear();
+}
+
+void MainWindow::analizeMemory()
+{
+    long memory = getMemoryExpense(procPid);
+    memoryMin = memoryMin < 0 ? memory : qMin(memory, memoryMin);
+    memoryMax = memoryMax < 0 ? memory : qMax(memory, memoryMax);
+    ui->plot->appendValue(memory);
+    ui->plot->update();
+    ui->statusbar->showMessage(QString("Используемая память: %1; мин: %2; макс: %3")
+                               .arg(getTextValue(memory, "Б", 1024))
+                               .arg(getTextValue(memoryMin, "Б", 1024))
+                               .arg(getTextValue(memoryMax, "Б", 1024)));
 }
 
 void MainWindow::on_actionChoiseProc_triggered()
@@ -69,6 +89,5 @@ void MainWindow::on_actionChoiseProc_triggered()
 
 void MainWindow::slotAnalize()
 {
-    ui->plot->appendValue(getMemoryExpense(procPid));
-    ui->plot->update();
+    analizeMemory();
 }

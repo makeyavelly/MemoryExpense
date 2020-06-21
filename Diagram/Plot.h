@@ -40,8 +40,5 @@ private:
     QPointF getPos(int time, long value) const;
     qreal getX(int time) const;
     qreal getY(long value) const;
-
-    QString textValue(long value) const;
-    QString textSuffix(int level) const;
 };
 

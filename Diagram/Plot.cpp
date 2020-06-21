@@ -1,6 +1,6 @@
 #include "Plot.h"
-#include "math.h"
 #include <QGraphicsTextItem>
+#include "Service/Service.h"
 
 const int sizeTitle = 100;
 
@@ -86,7 +86,7 @@ void Plot::paintGrid()
         while (value < vMaxPlot) {
             auto y = getY(value);
             scene()->addLine(xMin, y, xMax, y, penGrid);
-            QGraphicsTextItem *textItem = scene()->addText(textValue(value));
+            QGraphicsTextItem *textItem = scene()->addText(getTextValue(value, suffix, stepLevel));
             textItem->setPos(xMax, y - 12);
             value += stepLines;
         }
@@ -121,27 +121,4 @@ qreal Plot::getY(long value) const
         return height() - ((value - vMinPlot) * height() / vDispPlot);
     }
     return height() / 2;
-}
-
-QString Plot::textValue(long value) const
-{
-    int level = 0;
-    double v = value;
-    while (long(v) / stepLevel > 0) {
-        ++level;
-        v = double(v) / stepLevel;
-    }
-    return QString("%1 %2%3")
-            .arg(QString::number(v, 'f', level == 0 ? 0 : 2))
-            .arg(textSuffix(level))
-            .arg(suffix);
-}
-
-QString Plot::textSuffix(int level) const
-{
-    if (level == 1) return "к";
-    if (level == 2) return "М";
-    if (level == 3) return "Г";
-    if (level == 4) return "Т";
-    return QString();
 }
