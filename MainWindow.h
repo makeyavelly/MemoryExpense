@@ -21,8 +21,15 @@ private:
     QString procName;
     int procPid;
 
+    long memory;
     long memoryMin;
     long memoryMax;
+    long memoryFix;
+    long memoryFixMin;
+    long memoryFixMax;
+    long memoryFixBusy;
+    long memoryFixFree;
+    long memoryFixDelta;
 
     void loadSettings();
     void saveSettings();
@@ -31,8 +38,10 @@ private:
     void startAnalize();
 
     void analizeMemory();
+    QString getTextMemoryValue(long value) const;
 
 private slots:
-    void on_actionChoiseProc_triggered();
     void slotAnalize();
+    void on_actionChoiseProc_triggered();
+    void on_actionFix_triggered();
 };

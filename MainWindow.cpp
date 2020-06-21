@@ -62,20 +62,42 @@ void MainWindow::startAnalize()
     }
     memoryMin = -1;
     memoryMax = -1;
+    memoryFix = -1;
+    ui->groupMemoryFix->hide();
     ui->plot->clear();
 }
 
 void MainWindow::analizeMemory()
 {
-    long memory = getMemoryExpense(procPid);
+    memory = getMemoryExpense(procPid);
     memoryMin = memoryMin < 0 ? memory : qMin(memory, memoryMin);
     memoryMax = memoryMax < 0 ? memory : qMax(memory, memoryMax);
     ui->plot->appendValue(memory);
     ui->plot->update();
-    ui->statusbar->showMessage(QString("Используемая память: %1; мин: %2; макс: %3")
-                               .arg(getTextValue(memory, "Б", 1024))
-                               .arg(getTextValue(memoryMin, "Б", 1024))
-                               .arg(getTextValue(memoryMax, "Б", 1024)));
+    ui->labelMemory->setText(getTextMemoryValue(memory));
+    ui->labelMemoryMin->setText(getTextMemoryValue(memoryMin));
+    ui->labelMemoryMax->setText(getTextMemoryValue(memoryMax));
+
+    if (memoryFix >= 0) {
+        memoryFixMin = qMin(memory, memoryFixMin);
+        memoryFixMax = qMax(memory, memoryFixMax);
+        memoryFixBusy = memoryFixMax - memoryFixMin;
+        memoryFixFree = memoryFixMax - memory;
+        memoryFixDelta = qMax(memory - memoryFix, long(0));
+        ui->labelMemoryFixBusy->setText(getTextMemoryValue(memoryFixBusy));
+        ui->labelMemoryFixFree->setText(getTextMemoryValue(memoryFixFree));
+        ui->labelMemoryFixDelta->setText(getTextMemoryValue(memoryFixDelta));
+    }
+}
+
+QString MainWindow::getTextMemoryValue(long value) const
+{
+    return getTextValue(value, "Б", 1024);
+}
+
+void MainWindow::slotAnalize()
+{
+    analizeMemory();
 }
 
 void MainWindow::on_actionChoiseProc_triggered()
@@ -87,7 +109,10 @@ void MainWindow::on_actionChoiseProc_triggered()
     }
 }
 
-void MainWindow::slotAnalize()
+void MainWindow::on_actionFix_triggered()
 {
-    analizeMemory();
+    memoryFix = memory;
+    memoryFixMin = memory;
+    memoryFixMax = memory;
+    ui->groupMemoryFix->show();
 }
