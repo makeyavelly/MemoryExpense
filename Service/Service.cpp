@@ -17,9 +17,14 @@ long getMemoryExpense(int pid)
 {
 #ifdef __linux
     QProcess process;
-    process.start(QString("ps --pid %1 -o rss").arg(pid));
+    process.start(QString("top -b -n 1 -p %1").arg(pid));
     process.waitForFinished();
-    return QString::fromLocal8Bit(process.readAll()).trimmed().split("\n").last().toLong() * 1024;
+    QString answer = QString::fromLocal8Bit(process.readAll().trimmed()).split("\n").last().trimmed();
+    QStringList params = answer.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    if (params.count() > 6) {
+        return 1024 * (params.at(5).toLong() - params.at(6).toLong());
+    }
+    return 0;
 #else
     return 0;
 #endif
