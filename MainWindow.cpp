@@ -69,7 +69,8 @@ void MainWindow::startAnalize()
 
 void MainWindow::analizeMemory()
 {
-    memory = getMemoryExpense(procPid);
+    procPid = getPidProcess(procName);
+    memory = procPid ? getMemoryExpense(procPid) : 0;
     memoryMin = memoryMin < 0 ? memory : qMin(memory, memoryMin);
     memoryMax = memoryMax < 0 ? memory : qMax(memory, memoryMax);
     ui->plot->appendValue(memory);
