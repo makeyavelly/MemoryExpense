@@ -28,10 +28,8 @@ void MainWindow::loadSettings()
     QString procName = ini.value("PROC/name", QString()).toString();
     if (!procName.isEmpty()) {
         int pid = getPidProcess(procName);
-        if (pid) {
-            setProc(pid, procName);
-            startAnalize();
-        }
+        setProc(pid, procName);
+        startAnalize();
     }
     setGeometry(ini.value("WINDOW/x", 0).toInt(), ini.value("WINDOW/y", 0).toInt(),
                 ini.value("WINDOW/w", 500).toInt(), ini.value("WINDOW/h", 300).toInt());
@@ -70,6 +68,7 @@ void MainWindow::startAnalize()
 void MainWindow::analizeMemory()
 {
     procPid = getPidProcess(procName);
+    setProc(procPid, procName);
     memory = procPid ? getMemoryExpense(procPid) : 0;
     memoryMin = memoryMin < 0 ? memory : qMin(memory, memoryMin);
     memoryMax = memoryMax < 0 ? memory : qMax(memory, memoryMax);
